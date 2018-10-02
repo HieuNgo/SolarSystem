@@ -149,6 +149,19 @@
     */
 
     function nScaling(m) {
+      gl.enable(gl.DEPTH_TEST);
+      gl.depthFunc(gl.LEQUAL);
+      gl.clearColor(0.5, 0.5, 0.5, 0.9);
+      gl.clearDepth(1.0);
+
+      gl.viewport(0.0, 0.0, canvas.width, canvas.height);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      gl.uniformMatrix4fv(Pmatrix, false, proj_matrix);
+      gl.uniformMatrix4fv(Vmatrix, false, view_matrix);
+      gl.uniformMatrix4fv(Mmatrix, false, mov_matrix);
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index_buffer);
+      gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+
       m[0] = 2;
       m[5] = 0.5;
       m[10] = 1.5;
@@ -281,7 +294,7 @@
     */
     function moveRight(m) {
       console.log(m);
-      m = [1,0,0,0, 0,1,0,0, 0,0,1,0, 5,0,0,1];
+      m = [1,0,0,0, 0,1,0,0, 0,0,1,0, 500,500,0,1];
       console.log(m);
     }
     /*
@@ -364,19 +377,6 @@
       rotateX(mov_matrix, dt * 0.003);
       time_old = time;
 
-      gl.enable(gl.DEPTH_TEST);
-      gl.depthFunc(gl.LEQUAL);
-      gl.clearColor(0.5, 0.5, 0.5, 0.9);
-      gl.clearDepth(1.0);
-
-      gl.viewport(0.0, 0.0, canvas.width, canvas.height);
-      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-      gl.uniformMatrix4fv(Pmatrix, false, proj_matrix);
-      gl.uniformMatrix4fv(Vmatrix, false, view_matrix);
-      gl.uniformMatrix4fv(Mmatrix, false, mov_matrix);
-      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index_buffer);
-      gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
-
       window.requestAnimationFrame(animate);
     }
     var checkbox = function() {
@@ -394,39 +394,51 @@
               nScaling(mov_matrix);
               break;
             case 3:
-              animate(0);
-              break;
-            case 4:
               mirrorAtX(mov_matrix);
               break;
-            case 5:
+            case 4:
               mirrorAtY(mov_matrix);
               break;
-            case 6:
+            case 5:
               mirrorAtZ(mov_matrix);
               break;
-            case 7:
+            case 6:
               console.log("right");
               moveRight(mov_matrix);
               break;
-            case 8:
+            case 7:
               moveLeft(mov_matrix);
               break;
-            case 9:
+            case 8:
               moveUp(mov_matrix);
               break;
-            case 10:
+            case 9:
               moveDown(mov_matrix);
               break;
-            case 11:
+            case 10:
               moveClose(mov_matrix);
               break;
-            case 12:
+            case 11:
               moveFar(mov_matrix);
+              break;
+            case 12:
+              animate(0);
               break;
           }
         }
+        
+        gl.enable(gl.DEPTH_TEST);
+        gl.depthFunc(gl.LEQUAL);
+        gl.clearColor(0.5, 0.5, 0.5, 0.9);
+        gl.clearDepth(1.0);
 
+        gl.viewport(0.0, 0.0, canvas.width, canvas.height);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.uniformMatrix4fv(Pmatrix, false, proj_matrix);
+        gl.uniformMatrix4fv(Vmatrix, false, view_matrix);
+        gl.uniformMatrix4fv(Mmatrix, false, mov_matrix);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index_buffer);
+        gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
       }
     }
 
@@ -439,7 +451,6 @@
           <input id="shear" type="checkbox" >Shearing
           <input id="uScale" type="checkbox">Uniform Scaling
           <input id="nScale" type="checkbox">Non-uniform Scaling
-          <input id="rotate" type="checkbox" checked="checked">Rotating
           <input id="xMirror" type="checkbox">Mirror at X
           <input id="yMirror" type="checkbox">Mirror at Y
           <input id="zMirror" type="checkbox">Mirror at Z
@@ -449,6 +460,7 @@
           <input type="checkbox">Move down
           <input type="checkbox">Move close
           <input type="checkbox">Move far
+          <input id="rotate" type="checkbox" checked="checked">Rotating
           <span class="checkmark"></span>
         </label>
     </div>
